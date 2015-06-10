@@ -1,0 +1,16 @@
+{
+  "pluginType": "datasource",
+  "name": "OpenTSDB-V1",
+
+  "type": "opentsdb-v1",
+  "serviceName": "OpenTSDBV1Datasource",
+
+  "module": "plugins/datasource/opentsdbv1/datasource",
+
+  "partials": {
+    "config": "app/plugins/datasource/opentsdbv1/partials/config.html",
+    "query": "app/plugins/datasource/opentsdbv1/partials/query.editor.html"
+  },
+
+  "metrics": true
+}
