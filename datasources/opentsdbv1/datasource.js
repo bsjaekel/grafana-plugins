@@ -62,30 +62,34 @@ function (angular, _, kbn) {
           // break up the line
           var parts = row.split(" ");
 
-          // into its parts
-          var metric = parts[0];
-          var ts = parts[1];
-          var val = parts[2];
-          var rawTags = parts.slice(3);
-
-          // to keep the work to a minimum (sorry for that), we rebuild the
-          // OpenTSDB V2 result format from our V1 line based format
-          var key = metric + ":" + rawTags.join(",");
-          if(key in metricsData) { // if key is known, just save the data
-              metricsData[key]["dps"][ts] = val;
+          if(row === "" || part.length < 3) {
+            // skip
           } else {
-            // the key is unknown so we have a new metric to save our values to
-            var tags = {};
-            _.each(rawTags, function(tag) {
-              var tagparts = tag.split("=");
-              tags[tagparts[0]] = tagparts[1];
-            });
+            // into its parts
+            var metric = parts[0];
+            var ts = parts[1];
+            var val = parts[2];
+            var rawTags = parts.slice(3);
 
-            metricsData[key] = {
-              "metric": metric,
-              "dps": {ts: val},
-              "tags": tags,
-              "aggregatedTags": []
+            // to keep the work to a minimum (sorry for that), we rebuild the
+            // OpenTSDB V2 result format from our V1 line based format
+            var key = metric + ":" + rawTags.join(",");
+            if(key in metricsData) { // if key is known, just save the data
+                metricsData[key]["dps"][ts] = val;
+            } else {
+              // the key is unknown so we have a new metric to save our values to
+              var tags = {};
+              _.each(rawTags, function(tag) {
+                var tagparts = tag.split("=");
+                tags[tagparts[0]] = tagparts[1];
+              });
+
+              metricsData[key] = {
+                "metric": metric,
+                "dps": {ts: val},
+                "tags": tags,
+                "aggregatedTags": []
+              };
             };
           }
         });
